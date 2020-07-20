@@ -1,5 +1,6 @@
 from OpenGL.GL import *
 from OpenGL.GLUT import *
+from Seraph.Utilities.Colors import *
 
 class Primitives:
 
@@ -17,5 +18,5 @@ class Point(Primitives):
         self.draw()
 
     def draw(self):
-
+        set_color(self.color, self.alpha)
         glVertex3f(self.x, self.y, self.z)

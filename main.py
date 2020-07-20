@@ -2,12 +2,17 @@ from OpenGL.GL import *
 from OpenGL.GLUT import *
 from Seraph.Graph2D.Tools import *
 from Seraph.Utilities.Colors import *
+from Seraph.Graph2D.Coordinates import *
 
 def RenderScene():
     glClear(GL_COLOR_BUFFER_BIT)
 
-    grid = Grid(100, 100, 5, 5, WHITE, 0.4)
-    grid.DrawGrid()
+    graph1 = CartSys2D()
+    graph1.Draw()
+    #grid = Grid(100, 100, 5, 5, 1, WHITE, 0.4)
+    #grid.DrawGrid()
+    #axes = Axes(0, 0, 0, 100, 100, 5, GREEN, RED)
+    #axes.DrawAxes()
     glFlush()
 
 def SetupRC():
