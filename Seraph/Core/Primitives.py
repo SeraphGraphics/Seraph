@@ -20,3 +20,16 @@ class Point(Primitives):
     def draw(self):
         set_color(self.color, self.alpha)
         glVertex3f(self.x, self.y, self.z)
+
+class Line:
+
+    def __init__(self, points, width = 1):
+        self.points = points
+        self.width = width
+    def draw(self):
+        glLineWidth(self.width)
+        glBegin(GL_LINE_STRIP)
+        for point in self.points:
+            point.draw()
+        glEnd()
+

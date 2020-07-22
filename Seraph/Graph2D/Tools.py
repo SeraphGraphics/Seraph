@@ -1,3 +1,4 @@
+import numpy as np
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from Seraph.Utilities.Colors import *
@@ -18,18 +19,22 @@ class Grid:
 
         glLineWidth(self.width)
 
-        for x in range(-self.x_range, self.x_range, self.x_offset):
-            glBegin(GL_LINE_STRIP)
-            point = Point(x, self.y_range, 0, self.color)
-            point = Point(x, -self.y_range, 0, self.color)
-            glEnd()
+        
+
+        for x in np.arange(-self.x_range, self.x_range, self.x_offset):
+            points = []
+            points.append(Point(x, self.y_range, 0, self.color))
+            points.append(Point(x, -self.y_range, 0, self.color))
+            line = Line(points)
+            line.draw()
 
 
-        for y in range(-self.y_range, self.y_range, self.y_offset):
-            glBegin(GL_LINE_STRIP)
-            point = Point(self.x_range, y, 0, self.color)
-            point = Point(-self.x_range, y, 0, self.color)
-            glEnd()
+        for y in np.arange(-self.y_range, self.y_range, self.y_offset):
+            points = []
+            points.append(Point(self.x_range, y, 0, self.color))
+            points.append(Point(-self.x_range, y, 0, self.color))
+            line = Line(points)
+            line.draw()
 
 class Axes:
 
@@ -44,12 +49,14 @@ class Axes:
         self.color_y = color_y
 
     def DrawAxes(self):
-        glLineWidth(self.width)
-        glBegin(GL_LINE_STRIP)
-        point = Point(0, self.y_lim, 0, self.color_x)
-        point = Point(0, -self.y_lim, 0, self.color_x)
-        glEnd()
-        glBegin(GL_LINE_STRIP)
-        point = Point(self.x_lim, 0, 0, self.color_y)
-        point = Point(-self.x_lim, 0, 0, self.color_y)
-        glEnd()
+        
+        points = []
+        points.append(Point(0, self.y_lim, 0, self.color_x))
+        points.append(Point(0, -self.y_lim, 0, self.color_x))
+        line = Line(points)
+        line.draw()
+        points = []
+        points.append(Point(self.x_lim, 0, 0, self.color_y))
+        points.append(Point(-self.x_lim, 0, 0, self.color_y))
+        line = Line(points)
+        line.draw()

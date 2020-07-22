@@ -7,7 +7,7 @@ from Seraph.Graph2D.Coordinates import *
 def RenderScene():
     glClear(GL_COLOR_BUFFER_BIT)
 
-    graph1 = CartSys2D()
+    graph1 = CartSys2D(x_offset = 5, y_offset = 5)
     graph1.Draw()
     #grid = Grid(100, 100, 5, 5, 1, WHITE, 0.4)
     #grid.DrawGrid()
