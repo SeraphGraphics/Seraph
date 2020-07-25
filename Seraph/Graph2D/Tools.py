@@ -6,7 +6,7 @@ from Seraph.Core.Primitives import *
 
 class Grid:
 
-    def __init__(self, x_range, y_range, x_offset, y_offset, width, color, alpha=1):
+    def __init__(self, x_range, y_range, x_offset, y_offset, width, color, alpha=0.3):
         self.x_range = x_range
         self.y_range = y_range
         self.x_offset = x_offset
@@ -18,7 +18,7 @@ class Grid:
     def DrawGrid(self):
 
         glLineWidth(self.width)
-
+        set_color(self.color, self.alpha)
         
 
         for x in np.arange(-self.x_range, self.x_range, self.x_offset):
