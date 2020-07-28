@@ -8,7 +8,8 @@ from Seraph.Graph2D.Plot import *
 
 def RenderScene():
     glClear(GL_COLOR_BUFFER_BIT)
-
+    glEnable(GL_BLEND)
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
     graph1 = CartSys2D(x_offset = 1, y_offset = 1)
     graph1.Draw()
     X = np.linspace(-5, 5, 20)
@@ -19,13 +20,11 @@ def RenderScene():
     #grid.DrawGrid()
     #axes = Axes(0, 0, 0, 100, 100, 5, GREEN, RED)
     #axes.DrawAxes()
-    glFlush()
+    glutSwapBuffers()
 
 def SetupRC():
-    glEnable(GL_ALPHA_TEST)
-    glEnable(GL_BLEND)
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
-    glClearColor(0, 0, 0, 1)
+
+    glClearColor(0.0, 0.0, 0.0, 1);
 
 def ChangeSize(w, h):
     nRange = 20.0
@@ -44,7 +43,7 @@ def ChangeSize(w, h):
 
 if __name__ == "__main__":
     glutInit()
-    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB)
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA)
     glutCreateWindow("GLRect")
     glutDisplayFunc(RenderScene)
     glutReshapeFunc(ChangeSize)

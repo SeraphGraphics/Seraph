@@ -17,9 +17,10 @@ class Grid:
 
     def DrawGrid(self):
 
+
         glLineWidth(self.width)
         set_color(self.color, self.alpha)
-        
+
 
         for x in np.arange(-self.x_range, self.x_range, self.x_offset):
             points = []

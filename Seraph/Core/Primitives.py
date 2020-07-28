@@ -13,9 +13,10 @@ class Primitives:
 
 class Point(Primitives):
 
-    def __init__(self, x, y, z, color):
+    def __init__(self, x, y, z, color, is_drawing = True):
         super().__init__(x, y, z, color)
-        self.draw()
+        if is_drawing:
+            self.draw()
 
     def draw(self):
         set_color(self.color, self.alpha)
