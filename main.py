@@ -18,14 +18,14 @@ def RenderScene():
 
     graph1 = CartSys2D(x_offset=2, y_offset=2)
     graph1.Draw()
-
+    X0 = 5
     X = np.linspace(-100, 100, 10000)
     Y1 = np.sin(X - x_plot_offset) * 10
-    Y2 = np.cos(X + x_plot_offset) * 10
+    Y2 = np.cos(X0 - x_plot_offset) * (X - X0) + np.sin(X0 - x_plot_offset)
 
     plot1 = Plot2D(X, Y1, color.RED)
     plot1.draw()
-    plot2 = Plot2D(X, Y2, color.GREEN)
+    plot2 = Plot2D(X, Y2*10, color.GREEN)
     plot2.draw()
 
     glutSwapBuffers()
@@ -51,7 +51,7 @@ def SetupRC():
 
 
 def ChangeSize(w, h):
-    nRange = 10.0
+    nRange = 25.0
     if h == 0:
         h = 1
     glViewport(0, 0, w, h)
