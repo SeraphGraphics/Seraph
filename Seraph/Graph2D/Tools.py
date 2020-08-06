@@ -4,6 +4,7 @@ from OpenGL.GLUT import *
 from Seraph.Utilities.Colors import *
 from Seraph.Core.Primitives import *
 
+
 class Grid:
 
     def __init__(self, x_range, y_range, x_offset, y_offset, width, color, alpha=0.3):
@@ -17,25 +18,23 @@ class Grid:
 
     def DrawGrid(self):
 
-
+        set_color(self.color)
         glLineWidth(self.width)
-        set_color(self.color, self.alpha)
-
 
         for x in np.arange(-self.x_range, self.x_range, self.x_offset):
             points = []
-            points.append(Point(x, self.y_range, 0, self.color))
-            points.append(Point(x, -self.y_range, 0, self.color))
+            points.append(Point(x, self.y_range, 0, self.color, alpha=self.alpha))
+            points.append(Point(x, -self.y_range, 0, self.color, alpha=self.alpha))
             line = Line(points)
             line.draw()
-
 
         for y in np.arange(-self.y_range, self.y_range, self.y_offset):
             points = []
-            points.append(Point(self.x_range, y, 0, self.color))
-            points.append(Point(-self.x_range, y, 0, self.color))
+            points.append(Point(self.x_range, y, 0, self.color, alpha=self.alpha))
+            points.append(Point(-self.x_range, y, 0, self.color, alpha=self.alpha))
             line = Line(points)
             line.draw()
+
 
 class Axes:
 
@@ -50,7 +49,6 @@ class Axes:
         self.color_y = color_y
 
     def DrawAxes(self):
-        
         points = []
         points.append(Point(0, self.y_lim, 0, self.color_x))
         points.append(Point(0, -self.y_lim, 0, self.color_x))
