@@ -3,7 +3,7 @@ from OpenGL.GL import *
 from OpenGL.GLUT import *
 from Seraph.Utilities.Colors import *
 from Seraph.Core.Primitives import *
-
+from Seraph.Utilities.Text import *
 
 class Grid:
 
@@ -23,6 +23,8 @@ class Grid:
 
         for x in np.arange(-self.x_range, self.x_range, self.x_offset):
             points = []
+            num = str(x).encode('utf-8')
+            putText(x,0,Fonts.GLUT_BITMAP_9_BY_15, num, rgb_picker(155, 255, 209))
             points.append(Point(x, self.y_range, 0, self.color, alpha=self.alpha))
             points.append(Point(x, -self.y_range, 0, self.color, alpha=self.alpha))
             line = Line(points)
@@ -30,6 +32,8 @@ class Grid:
 
         for y in np.arange(-self.y_range, self.y_range, self.y_offset):
             points = []
+            num = str(y).encode('utf-8')
+            putText(0,y,Fonts.GLUT_BITMAP_9_BY_15, num, rgb_picker(155, 255, 209))
             points.append(Point(self.x_range, y, 0, self.color, alpha=self.alpha))
             points.append(Point(-self.x_range, y, 0, self.color, alpha=self.alpha))
             line = Line(points)
