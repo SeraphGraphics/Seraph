@@ -16,15 +16,33 @@ class Grid:
         self.color = color
         self.alpha = alpha
 
-    def DrawGrid(self):
-
+    def DrawGrid(self, width, heigth, nRange):
         set_color(self.color)
         glLineWidth(self.width)
+        glPushMatrix()
+
+        if width <= heigth:
+            proportion = heigth/width
+        else:
+            proportion = width/heigth
+
+        stepx_px = width / (2 * (nRange * proportion / self.x_offset))
+        stepy_px = heigth / (2 * (nRange * proportion / self.y_offset))
+        print(stepx_px, stepy_px)
+
+        if stepx_px < 10:
+            self.x_offset *= 2
+        elif stepx_px > 50:
+            self.x_offset /= 2
+        if stepy_px < 10:
+            self.y_offset *= 2
+        elif stepy_px > 50:
+            self.y_offset /= 2
 
         for x in np.arange(-self.x_range, self.x_range, self.x_offset):
             points = []
-            num = str(x).encode('utf-8')
-            putText(x,0,Fonts.GLUT_BITMAP_9_BY_15, num, rgb_picker(155, 255, 209))
+            num = "{:.0f}".format(x).encode('utf-8')
+            putText(x,0,Fonts.GLUT_STROKE_ROMAN, 1, num, rgb_picker(155, 255, 209))
             points.append(Point(x, self.y_range, 0, self.color, alpha=self.alpha))
             points.append(Point(x, -self.y_range, 0, self.color, alpha=self.alpha))
             line = Line(points)
@@ -32,12 +50,13 @@ class Grid:
 
         for y in np.arange(-self.y_range, self.y_range, self.y_offset):
             points = []
-            num = str(y).encode('utf-8')
-            putText(0,y,Fonts.GLUT_BITMAP_9_BY_15, num, rgb_picker(155, 255, 209))
+            num = "{:.0f}".format(y).encode('utf-8')
+            putText(0,y,Fonts.GLUT_STROKE_ROMAN, 1, num, rgb_picker(155, 255, 209))
             points.append(Point(self.x_range, y, 0, self.color, alpha=self.alpha))
             points.append(Point(-self.x_range, y, 0, self.color, alpha=self.alpha))
             line = Line(points)
             line.draw()
+        glPopMatrix()
 
 
 class Axes:
@@ -63,3 +82,7 @@ class Axes:
         points.append(Point(-self.x_lim, 0, 0, self.color_y))
         line = Line(points)
         line.draw()
+
+
+
+   # def DrawUpdate(self, ):
