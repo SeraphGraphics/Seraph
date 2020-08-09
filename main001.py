@@ -15,7 +15,7 @@ Y2 = np.cos(X) * 10
 plot1 = Plot2D(X, Y1, color.RED)
 plot2 = Plot2D(X, Y2, color.GREEN)
 graph.addPlot(plot1)
-graph.addPlot(plot2)
+#graph.addPlot(plot2)
 graph.Draw()
 
 renderer.Render()
