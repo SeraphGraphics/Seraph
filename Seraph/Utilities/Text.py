@@ -18,17 +18,12 @@ class Fonts:
 
 def putText(x, y, font, abs_size, string, color):
     size = abs_size / 119.05
-    """set_color(color)
-    glRasterPos2f(x, y)
-    glScalef(size, size, size)
-    glutBitmapString(font, string)"""
     set_color(color)
     glLineWidth(2)
     glPushMatrix()
     glTranslatef(x, y, 0)
     glScalef(size, size, size)
     glutStrokeString(font, string)
-
 
     glPopMatrix()
 
