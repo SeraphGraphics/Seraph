@@ -31,3 +31,9 @@ def putText(x, y, font, abs_size, string, color):
 
 
     glPopMatrix()
+
+def numDot(number):
+    if '.' in str(number):
+        return abs(str(number).find('.') - len(str(number))) - 1
+    else:
+        return 0

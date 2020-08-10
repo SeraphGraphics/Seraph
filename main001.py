@@ -6,7 +6,7 @@ from Seraph.Utilities.Text import *
 from Seraph.Core.Render import *
 import numpy as np
 
-renderer = Renderer(600, 600, "name", 25)
+renderer = Renderer(600, 600, "name", 25, scale_x=1)
 
 graph = CartSys2D(renderer, x_offset=1, y_offset=1)
 X = np.linspace(-100, 100, 10000)

@@ -27,11 +27,11 @@ class CartSys2D:
 
         glClearColor(*self.color_bg, 1)
         glClear(GL_COLOR_BUFFER_BIT)
-        self.grid.DrawGrid(self.renderer.stepx_px, self.renderer.stepy_px)
-        self.axes.DrawAxes(self.renderer.stepx_px, self.renderer.stepy_px)
+        self.grid.DrawGrid(self.renderer.stepx_px, self.renderer.stepy_px, self.renderer.scale_x, self.renderer.scale_y)
+        self.axes.DrawAxes(self.renderer.stepx_px, self.renderer.stepy_px, self.renderer.scale_x, self.renderer.scale_y)
 
         for plot in self.plots:
-            plot.draw()
+            plot.draw(self.renderer.scale_x, self.renderer.scale_y)
         glutSwapBuffers()
 
     def Draw(self):

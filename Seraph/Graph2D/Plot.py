@@ -11,9 +11,9 @@ class Plot2D:
         self.color = color
         self.alpha = alpha
 
-    def draw(self, ):
+    def draw(self, scale_x, scale_y):
         set_color(self.color, self.alpha)
         glBegin(GL_LINE_STRIP)
         for x, y in zip(self.X, self.Y):
-            glVertex(x, y, 0)
+            glVertex(x * scale_x, y * scale_y, 0)
         glEnd()

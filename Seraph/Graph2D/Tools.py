@@ -16,35 +16,32 @@ class Grid:
         self.color = color
         self.alpha = alpha
 
-    def DrawGrid(self, stepx_px, stepy_px):
+    def DrawGrid(self, stepx_px, stepy_px, scale_x, scale_y):
         set_color(self.color)
         glLineWidth(self.width)
         glPushMatrix()
-        stepx_px *= self.x_offset
-        stepy_px *= self.y_offset
 
-        print(stepx_px, stepy_px)
-
-        if stepx_px < 15:
+        if self.x_offset * scale_x * stepx_px < 15:
             self.x_offset *= 2
-        elif stepx_px > 30 and (stepx_px * self.x_offset / 2) > 10:
+        elif self.x_offset * scale_x * stepx_px > 30:
             self.x_offset /= 2
-        if stepy_px < 15:
+        if self.y_offset * scale_y * stepy_px < 15:
             self.y_offset *= 2
-        elif stepy_px > 30 and (stepy_px * self.y_offset / 2) > 10:
+        elif self.y_offset * scale_y * stepy_px > 30:
             self.y_offset /= 2
 
-        for x in np.arange(-self.x_range, self.x_range, self.x_offset):
+
+        for x in np.arange(-self.x_range * scale_x, self.x_range * scale_x, self.x_offset):
             points = []
-            points.append(Point(x, self.y_range, 0, self.color, alpha=self.alpha))
-            points.append(Point(x, -self.y_range, 0, self.color, alpha=self.alpha))
+            points.append(Point(x * scale_x, self.y_range * scale_y, 0, self.color, alpha=self.alpha))
+            points.append(Point(x * scale_x, -self.y_range * scale_y, 0, self.color, alpha=self.alpha))
             line = Line(points)
             line.draw()
 
         for y in np.arange(-self.y_range, self.y_range, self.y_offset):
             points = []
-            points.append(Point(self.x_range, y, 0, self.color, alpha=self.alpha))
-            points.append(Point(-self.x_range, y, 0, self.color, alpha=self.alpha))
+            points.append(Point(self.x_range * scale_x, y * scale_y, 0, self.color, alpha=self.alpha))
+            points.append(Point(-self.x_range * scale_x, y * scale_y, 0, self.color, alpha=self.alpha))
             line = Line(points)
             line.draw()
         glPopMatrix()
@@ -68,15 +65,15 @@ class Axes:
         self.stroke_size = 1
         self.stroke_size_px = self.size_px / 2
 
-    def DrawAxes(self, stepx_px, stepy_px):
+    def DrawAxes(self, stepx_px, stepy_px, scale_x, scale_y):
         points = []
-        points.append(Point(0, self.y_lim, 0, self.color_x))
-        points.append(Point(0, -self.y_lim, 0, self.color_x))
+        points.append(Point(0, self.y_lim * scale_y, 0, self.color_x))
+        points.append(Point(0, -self.y_lim * scale_y, 0, self.color_x))
         line = Line(points, self.width)
         line.draw()
         points = []
-        points.append(Point(self.x_lim, 0, 0, self.color_y))
-        points.append(Point(-self.x_lim, 0, 0, self.color_y))
+        points.append(Point(self.x_lim * scale_x, 0, 0, self.color_y))
+        points.append(Point(-self.x_lim * scale_x, 0, 0, self.color_y))
         line = Line(points, self.width)
         line.draw()
 
@@ -84,31 +81,45 @@ class Axes:
         self.size = self.size_px / stepx_px
         self.stroke_size = self.stroke_size_px / stepx_px
 
-        while self.num_offset_x <= 4 * glutStrokeWidth(Fonts.GLUT_STROKE_ROMAN, ord('-')) * self.size/glutStrokeHeight(Fonts.GLUT_STROKE_ROMAN):
-            self.num_offset_x += 1
-        while self.num_offset_x >= 6 * glutStrokeWidth(Fonts.GLUT_STROKE_ROMAN, ord('-')) * self.size/glutStrokeHeight(Fonts.GLUT_STROKE_ROMAN):
-            self.num_offset_x -= 1
-        while self.num_offset_y <= 1.5 * self.size:
-            self.num_offset_y += 1
-        while self.num_offset_y >= 3 * self.size:
-            self.num_offset_y -= 1
 
-        for x in np.concatenate((np.arange(0, self.x_lim, self.num_offset_x), np.arange(0, -self.x_lim, -self.num_offset_x))):
-            num = "{:.0f}".format(x).encode('utf-8')
-            putText(x + 5 / stepx_px, 0 + 5 / stepx_px, Fonts.GLUT_STROKE_ROMAN, self.size, num, rgb_picker(155, 255, 209))
+        while self.num_offset_x * scale_x <= (len(str(self.num_offset_x)) + 6) * \
+                glutStrokeWidth(Fonts.GLUT_STROKE_ROMAN, ord('-')) * self.size/glutStrokeHeight(Fonts.GLUT_STROKE_ROMAN):
+            self.num_offset_x = int(self.num_offset_x + 1)
+        while self.num_offset_x * scale_x >= (len(str(self.num_offset_x)) + 10) * \
+                glutStrokeWidth(Fonts.GLUT_STROKE_ROMAN, ord('-')) * self.size/glutStrokeHeight(Fonts.GLUT_STROKE_ROMAN):
+            if self.num_offset_x > 1:
+                self.num_offset_x -= 1
+            else:
+                self.num_offset_x *= 0.5
+        while self.num_offset_y * scale_y <= (len(str(self.num_offset_y)) + 3) * self.size:
+            self.num_offset_y = int(self.num_offset_y + 1)
+        while self.num_offset_y * scale_y >= (len(str(self.num_offset_y)) + 5) * self.size:
+            if self.num_offset_y > 1:
+                self.num_offset_y -= 1
+            else:
+                self.num_offset_y *= 0.5
+
+        for x in np.concatenate((np.arange(0, self.x_lim, self.num_offset_x),
+                                 np.arange(0, -self.x_lim, -self.num_offset_x))):
+            digits = numDot(x)
+            num = "{:.{digits}f}".format(x, digits=digits).encode('utf-8')
+            putText(x * scale_x + 5 / stepx_px, 0 + 5 / stepx_px,
+                    Fonts.GLUT_STROKE_ROMAN, self.size, num, rgb_picker(155, 255, 209))
             points = []
-            points.append(Point(x, self.stroke_size/2, 0, self.color_x))
-            points.append(Point(x, -self.stroke_size/2, 0, self.color_x))
+            points.append(Point(x * scale_x, self.stroke_size/2, 0, self.color_x))
+            points.append(Point(x * scale_x, -self.stroke_size/2, 0, self.color_x))
             line = Line(points, self.width)
             line.draw()
 
-
-        for y in np.concatenate((np.arange(0, self.y_lim, self.num_offset_y), np.arange(0, -self.y_lim, -self.num_offset_y))):
-            num = "{:.0f}".format(y).encode('utf-8')
-            putText(0 + 5 / stepx_px, y + 5 / stepx_px, Fonts.GLUT_STROKE_ROMAN, self.size, num, rgb_picker(155, 255, 209))
+        for y in np.concatenate((np.arange(0, self.y_lim, self.num_offset_y),
+                                 np.arange(0, -self.y_lim, -self.num_offset_y))):
+            digits = numDot(y)
+            num = "{:.{digits}f}".format(y, digits=digits).encode('utf-8')
+            putText(0 + 5 / stepx_px, y * scale_y + 5 / stepx_px,
+                    Fonts.GLUT_STROKE_ROMAN, self.size, num, rgb_picker(155, 255, 209))
             points = []
-            points.append(Point(self.stroke_size / 2, y, 0, self.color_y))
-            points.append(Point(-self.stroke_size / 2, y, 0, self.color_y))
+            points.append(Point(self.stroke_size / 2, y * scale_y, 0, self.color_y))
+            points.append(Point(-self.stroke_size / 2, y * scale_y, 0, self.color_y))
             line = Line(points, self.width)
             line.draw()
 
