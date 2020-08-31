@@ -2,13 +2,13 @@ from OpenGL.GL import *
 from OpenGL.GLUT import *
 
 class Window:
-    def __init__(self, width, heigth, name):
+    def __init__(self, width, height, name):
         self.width = width
-        self.heigth = heigth
+        self.height = height
         self.name = name
 
 class Renderer:
-    def __init__(self, window, scale_x=1, scale_y=1, perspective_x=25, perspective_y=25):
+    def __init__(self, window, scale_x=1, scale_y=1, perspective_x=50, perspective_y=50):
         self.window = window
         self.scale_x = scale_x
         self.scale_y = scale_y
@@ -23,41 +23,47 @@ class Renderer:
         self.RenderInit()
 
     def CheckProportion(self):
-        if self.window.width <= self.window.heigth:
-            self.proportion = self.window.heigth / self.window.width
+        if self.window.width <= self.window.height:
+            self.proportion = self.window.height / self.window.width
             self.step_px = self.window.width / self.perspective_x
         else:
-            self.proportion = self.window.width / self.window.heigt
-            self.step_px = self.window.heigth / self.perspective_y
+            self.proportion = self.window.width / self.window.height
+            self.step_px = self.window.height / self.perspective_y
 
     def UpdateOrtho(self):
+        glViewport(0, 0, self.window.width, self.window.height)
         glMatrixMode(GL_PROJECTION)
         glLoadIdentity()
-        if self.window.width <= self.window.heigth:
-            glOrtho(-self.perspective_x + (self.dx * self.scale_x),
-                    self.perspective_x + (self.dx * self.scale_x),
-                    -self.perspective_y * self.proportion + (self.dy * self.scale_y),
-                    self.perspective_y * self.proportion + (self.dy * self.scale_y),
-                    -1, 1)
+        if self.window.width <= self.window.height:
+            glOrtho(-self.perspective_x / 2 + (self.dx * self.scale_x),
+                    self.perspective_x / 2 + (self.dx * self.scale_x),
+                    -self.perspective_y / 2 * self.proportion + (self.dy * self.scale_y),
+                    self.perspective_y / 2 * self.proportion + (self.dy * self.scale_y),
+                    -5, 5)
         else:
-            glOrtho(-self.perspective_x * self.proportion + (self.dx * self.scale_x),
-                    self.perspective_x * self.proportion + (self.dx * self.scale_x),
-                    -self.perspective_y + (self.dy * self.scale_y),
-                    self.perspective_y + (self.dy * self.scale_y),
-                    -1, 1)
+            glOrtho(-self.perspective_x / 2 * self.proportion + (self.dx * self.scale_x),
+                    self.perspective_x / 2 * self.proportion + (self.dx * self.scale_x),
+                    -self.perspective_y / 2 + (self.dy * self.scale_y),
+                    self.perspective_y / 2 + (self.dy * self.scale_y),
+                    -5, 5)
 
         glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
         glutPostRedisplay()
 
 
-    def ChangeSize(self, width, heigth):
-        if heigth == 0:
-            heigth = 1
+    def ChangeSize(self, width, height):
+        if height == 0:
+            height = 1
         self.window.width = width
-        self.window.heigth = heigth
+        self.window.height = height
         self.CheckProportion()
         self.UpdateOrtho()
+
+    def ApplyKeyEvents(self, KeyEvents):
+        glutSpecialFunc(KeyEvents)
+        glutKeyboardFunc(KeyEvents)
+
 
 
     def SetupRC(self):
@@ -65,17 +71,18 @@ class Renderer:
 
     def RenderInit(self):
         glutInit()
-        glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA)
-        glutInitWindowSize(self.window.width, self.window.heigth)
+        glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH)
+        glutInitWindowSize(self.window.width, self.window.height)
         glutCreateWindow(self.window.name)
         glEnable(GL_BLEND)
+        glEnable(GL_DEPTH_TEST)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
         glutReshapeFunc(self.ChangeSize)
         '''glutKeyboardFunc(self.NormalKeyEvent)
         glutSpecialFunc(self.SpecialKeyEvent)
         glutMouseFunc(self.MouseEvent)
-        glutMouseWheelFunc(self.MouseWheelEvent)'''
-        glutSetKeyRepeat(GLUT_KEY_REPEAT_ON)
+        glutMouseWheelFunc(self.MouseWheelEvent)
+        glutSetKeyRepeat(GLUT_KEY_REPEAT_ON)'''
         self.SetupRC()
 
     def Render(self):
