@@ -8,10 +8,13 @@ class Window:
         self.name = name
 
 class Renderer:
-    def __init__(self, window, scale_x=1, scale_y=1, perspective_x=50, perspective_y=50):
+    def __init__(self, window, rotX = 0, rotY = 0, scale_x=1, scale_y=1, scale=1, perspective_x=50, perspective_y=50):
         self.window = window
         self.scale_x = scale_x
         self.scale_y = scale_y
+        self.rotX = rotX
+        self.rotY = rotY
+        self.scale = scale
         self.perspective_x = perspective_x
         self.perspective_y = perspective_y
         self.step_px = 0
@@ -49,8 +52,19 @@ class Renderer:
 
         glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
+    def ReDisplay(self):
         glutPostRedisplay()
-
+    def UpdateOrtho3D(self):
+        nRange =  100 / self.scale
+        glViewport(0,0,self.window.width, self.window.height)
+        glMatrixMode(GL_PROJECTION)
+        glLoadIdentity()
+        if self.window.width <= self.window.height:
+            glOrtho(-nRange, nRange, -nRange*self.window.height/self.window.width, nRange*self.window.height/self.window.width, -nRange, nRange)
+        else:
+            glOrtho(-nRange*self.window.width/self.window.height, nRange*self.window.width/self.window.height, -nRange, nRange, -nRange, nRange)
+        glMatrixMode(GL_MODELVIEW)
+        glLoadIdentity()
 
     def ChangeSize(self, width, height):
         if height == 0:
@@ -58,7 +72,7 @@ class Renderer:
         self.window.width = width
         self.window.height = height
         self.CheckProportion()
-        self.UpdateOrtho()
+        self.UpdateOrtho3D()
 
     def ApplyKeyEvents(self, KeyEvents):
         glutSpecialFunc(KeyEvents)
@@ -87,3 +101,8 @@ class Renderer:
 
     def Render(self):
         glutMainLoop()
+    def startAnimation(self, animation):
+        animation(1)
+    def loopAnimation(self, animation, time):
+        glutPostRedisplay()
+        glutTimerFunc(time, animation, 1)

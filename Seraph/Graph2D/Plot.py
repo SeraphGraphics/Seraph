@@ -5,7 +5,7 @@ from Seraph.Utilities.Colors import *
 
 
 class Plot2D:
-    def __init__(self, X, Y, color,  width=2,alpha=1):
+    def __init__(self, X, Y, color, width=2, alpha=1):
         self.X = X
         self.Y = Y
         self.color = color
@@ -19,3 +19,9 @@ class Plot2D:
         for x, y in zip(self.X, self.Y):
             glVertex3f(x * scale_x, y * scale_y, 3)
         glEnd()
+
+
+class PlotAnimation:
+    def __init__(self, graph, plot):
+        self.graph = graph
+        self.plot = plot

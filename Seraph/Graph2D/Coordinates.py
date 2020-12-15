@@ -1,7 +1,7 @@
-
 from Seraph.Graph2D.Tools import *
 from Seraph.Utilities.Colors import *
 from Seraph.Utilities.Variables import *
+
 
 class CartSys2D:
 
@@ -19,18 +19,17 @@ class CartSys2D:
         self.UpdateViewRange()
 
     def UpdateViewRange(self):
-        #if self.renderer.window.width / (2 * self.renderer.step_px * self.renderer.scale_x) < self.grid.range.x:
+        # if self.renderer.window.width / (2 * self.renderer.step_px * self.renderer.scale_x) < self.grid.range.x:
         self.view.left = - self.renderer.window.width / (2 * self.renderer.step_px * self.renderer.scale_x) + \
                          self.renderer.dx
         self.view.right = self.renderer.window.width / (2 * self.renderer.step_px * self.renderer.scale_x) + \
-                         self.renderer.dx
-        #if self.renderer.window.height / (2 * self.renderer.step_px * self.renderer.scale_y) < self.grid.range.y:
+                          self.renderer.dx
+        # if self.renderer.window.height / (2 * self.renderer.step_px * self.renderer.scale_y) < self.grid.range.y:
         self.view.bottom = - self.renderer.window.height / (2 * self.renderer.step_px * self.renderer.scale_y) + \
                            self.renderer.dy
         self.view.up = self.renderer.window.height / (2 * self.renderer.step_px * self.renderer.scale_y) + \
-                           self.renderer.dy
-        #print(self.view.left, self.view.right, self.view.up, self.view.bottom)
-
+                       self.renderer.dy
+        # print(self.view.left, self.view.right, self.view.up, self.view.bottom)
 
     def addPlot(self, plot):
         self.plots.append(plot)
@@ -39,13 +38,23 @@ class CartSys2D:
         self.UpdateViewRange()
         glClearColor(*self.color_bg, 1)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+        glPushMatrix()
+        glRotate(self.renderer.rotX, 1, 0, 0)
+        glRotate(self.renderer.rotY, 0, 1, 0)
         self.grid.DrawGrid(self.renderer, self.view)
-
         self.axes.DrawAxes(self.renderer, self.view)
         for plot in self.plots:
             plot.draw(self.renderer.scale_x, self.renderer.scale_y)
+        glPopMatrix()
         glutSwapBuffers()
+
+    def setAnimationFunction(self, animationFunction, animationTimer):
+        glutTimerFunc(animationTimer, animationFunction, 1)
+
+    def Render(self):
+        self.renderer.Render()
 
     def Draw(self):
         glutDisplayFunc(self.DrawScene)
-        self.renderer.Render()
+        glutPostRedisplay()
+

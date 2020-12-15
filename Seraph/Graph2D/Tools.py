@@ -7,7 +7,7 @@ from Seraph.Utilities.Text import *
 from Seraph.Utilities.Variables import *
 
 class Grid:
-    def __init__(self, range, line_width, color, alpha=0.3):
+    def __init__(self, range, line_width, color, alpha=0.1):
         self.range = range
         self.offset = Structure2D(1, 1)
         self.line_width = line_width
@@ -39,6 +39,7 @@ class Grid:
             points.append(Point(view.right * renderer.scale_x, y * renderer.scale_y, 0, self.color, self.alpha))
             line = Line(points, color=self.color)
             line.draw()
+
 
 
 
@@ -77,8 +78,8 @@ class Axes:
         offset_width = self.num_offset.x * renderer.scale_x
         offset_hight = self.num_offset.y * renderer.scale_y
 
-        print(">>>>-<<<<<")
-        print(self.num_size, offset_hight)
+        #print(">>>>-<<<<<")
+        #print(self.num_size, offset_hight)
 
         if offset_width <= (num_len + 2) * num_width:
 
@@ -113,7 +114,6 @@ class Axes:
                     self.num_offset.y /= 0.5
         if offset_hight > 7 * self.num_size:
             tmp = 2 * self.num_size / renderer.scale_y
-            print(tmp)
             if tmp >= 1 and int(tmp) % 2 == 0 or int(tmp) == 1:
                 self.num_offset.y = int(tmp)
             elif tmp >= 1 and int(tmp) % 2 != 0:
@@ -127,7 +127,7 @@ class Axes:
             num_digits = numDot(x)
             number = "{:.{num_digits}f}".format(x, num_digits=num_digits).encode('utf-8')
             putText(x * renderer.scale_x + 5 / renderer.step_px, -num_width - 8 / renderer.step_px, -3, Fonts.GLUT_STROKE_ROMAN,
-                    self.num_size, number, color.RED)
+                    self.num_size, number, color.BLACK)
             points = []
             points.append(Point(x * renderer.scale_x, self.separator_size, 0, self.color, alpha=self.alpha))
             points.append(Point(x * renderer.scale_x, -self.separator_size, 0, self.color, alpha=self.alpha))
@@ -138,9 +138,72 @@ class Axes:
             num_digits = numDot(y)
             number = "{:.{num_digits}f}".format(y, num_digits=num_digits).encode('utf-8')
             putText(5 / renderer.step_px, y * renderer.scale_y + 5 / renderer.step_px, -3, Fonts.GLUT_STROKE_ROMAN,
-                    self.num_size, number, color.RED)
+                    self.num_size, number, color.BLACK)
             points = []
             points.append(Point(self.separator_size, y * renderer.scale_y, 0, self.color, alpha=self.alpha))
             points.append(Point(-self.separator_size, y * renderer.scale_y, 0, self.color, alpha=self.alpha))
             line = Line(points, width=self.width)
+            line.draw()
+class Grid3D:
+    def __init__(self, range, line_width, color, alpha=0):
+        self.range = range
+        self.offset = Structure2D(1, 1)
+        self.line_width = line_width
+        self.color = color
+        self.alpha = alpha
+
+    def DrawGrid(self, renderer, view):
+        set_color(self.color, self.alpha)
+
+        for x in range(-self.range.x, self.range.x, 10):
+            current_color = self.color
+            current_width = 1
+            if x == 0:
+                current_color = color.RED
+                current_width = 5
+            points = []
+            points.append(Point(x, -self.range.y, 0, self.color, self.alpha))
+            points.append(Point(x, self.range.y, 0, self.color, self.alpha))
+            line = Line(points, color=current_color, width=current_width, alpha=self.alpha)
+            line.draw()
+            if x == 0:
+                current_color = color.GREEN
+                current_width = 5
+            points = []
+            points.append(Point(x, 0, -self.range.z, self.color, self.alpha))
+            points.append(Point(x, 0, self.range.z, self.color, self.alpha))
+            line = Line(points, color=current_color, width=current_width)
+            line.draw()
+
+        for y in range(-self.range.y, self.range.y, 10):
+            current_color = self.color
+            current_width = 1
+            if y == 0:
+                current_color = color.BLUE
+                current_width = 5
+            points = []
+            points.append(Point(-self.range.x, y, 0, self.color, self.alpha))
+            points.append(Point(self.range.x, y, 0, self.color, self.alpha))
+            line = Line(points, color=current_color, width=current_width)
+            line.draw()
+            points = []
+            points.append(Point(0, y, -self.range.z, self.color, self.alpha))
+            points.append(Point(0, y, self.range.z, self.color, self.alpha))
+            line = Line(points, color=self.color)
+            line.draw()
+        for z in range(-self.range.z, self.range.z, 10):
+            current_color = self.color
+            current_width = 1
+            if z == 0:
+                current_color = color.GREEN
+                current_width = 5
+            points = []
+            points.append(Point(-self.range.x, 0, z, self.color, self.alpha))
+            points.append(Point(self.range.x, 0, z, self.color, self.alpha))
+            line = Line(points, color=self.color)
+            line.draw()
+            points = []
+            points.append(Point(0, -self.range.y, z, self.color, self.alpha))
+            points.append(Point(0, self.range.y, z, self.color, self.alpha))
+            line = Line(points, color=self.color)
             line.draw()
