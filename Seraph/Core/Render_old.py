@@ -14,6 +14,8 @@ class Renderer:
         self.stepy_px = heigth / (2 * (nRange * self.proportion))
         self.scale_x = scale_x
         self.scale_y = scale_y
+        self.view_x = self.nRange
+        self.view_y = self.nRange
         self.dx = 0
         self.dy = 0
 
@@ -21,8 +23,6 @@ class Renderer:
         glMatrixMode(GL_PROJECTION)
         glLoadIdentity()
         if self.width <= self.heigth:
-            print(-self.nRange + (self.dx * self.scale_x ), self.nRange + (self.dx * self.scale_x ),
-                    -self.nRange * self.proportion + (self.dy * self.scale_y), self.nRange * self.proportion + (self.dy * self.scale_y))
             glOrtho(-self.nRange + (self.dx * self.scale_x), self.nRange + (self.dx * self.scale_x),
                     -self.nRange * self.proportion + (self.dy * self.scale_y), self.nRange * self.proportion + (self.dy * self.scale_y),
                     -self.nRange, self.nRange)
@@ -33,6 +33,7 @@ class Renderer:
         glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
         glutPostRedisplay()
+
 
     def ChangeSize(self, width, heigth):
         self.size_updated = True
@@ -62,25 +63,33 @@ class Renderer:
 
     def SpecialKeyEvent(self, key, x, y):
         if key == GLUT_KEY_RIGHT:
-            if glutGetModifiers() == GLUT_ACTIVE_CTRL:
+            if glutGetModifiers() == GLUT_ACTIVE_CTRL and self.scale_x >= 1:
                 self.scale_x += 1
+            elif glutGetModifiers() == GLUT_ACTIVE_CTRL and self.scale_x < 1:
+                self.scale_x /= 0.5
             else:
-                self.dx += 1
+                self.dx += 0.1
         if key == GLUT_KEY_LEFT:
-            if glutGetModifiers() == GLUT_ACTIVE_CTRL and self.scale_x != 1:
+            if glutGetModifiers() == GLUT_ACTIVE_CTRL and self.scale_x > 1:
                 self.scale_x -= 1
+            elif glutGetModifiers() == GLUT_ACTIVE_CTRL and self.scale_x <= 1:
+                self.scale_x *= 0.5
             else:
-                self.dx -= 1
+                self.dx -= 0.1
         if key == GLUT_KEY_UP:
-            if glutGetModifiers() == GLUT_ACTIVE_CTRL:
+            if glutGetModifiers() == GLUT_ACTIVE_CTRL and self.scale_y >= 1:
                 self.scale_y += 1
+            elif glutGetModifiers() == GLUT_ACTIVE_CTRL and self.scale_y < 1:
+                self.scale_y /= 0.5
             else:
-                self.dy += 1
+                self.dy += 0.1
         if key == GLUT_KEY_DOWN:
-            if glutGetModifiers() == GLUT_ACTIVE_CTRL and self.scale_y != 1:
+            if glutGetModifiers() == GLUT_ACTIVE_CTRL and self.scale_y > 1:
                 self.scale_y -= 1
+            elif glutGetModifiers() == GLUT_ACTIVE_CTRL and self.scale_y <= 1:
+                self.scale_y *= 0.5
             else:
-                self.dy -= 1
+                self.dy -= 0.1
 
         self.UpdateOrtho()
 
@@ -89,11 +98,11 @@ class Renderer:
 
     def MouseWheelEvent(self, wheel, direction, x, y):
         if direction == 1 and glutGetModifiers() == GLUT_ACTIVE_CTRL:
-            self.scale_x += 1
-            self.scale_y += 1
-        if direction == -1 and glutGetModifiers() == GLUT_ACTIVE_CTRL and self.scale_x != 1 and self.scale_y != 1:
-            self.scale_x -= 1
-            self.scale_y -= 1
+            self.scale_x += 0.1
+            self.scale_y += 0.1
+        if direction == -1 and glutGetModifiers() == GLUT_ACTIVE_CTRL and self.scale_x != 0.1 and self.scale_y != 0.1:
+            self.scale_x -= 0.1
+            self.scale_y -= 0.1
         self.UpdateOrtho()
 
     def SetupRC(self):

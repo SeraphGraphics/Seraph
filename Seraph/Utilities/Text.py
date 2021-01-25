@@ -15,25 +15,26 @@ class Fonts:
     GLUT_BITMAP_HELVETICA_12 = ft.GLUT_BITMAP_HELVETICA_12
     GLUT_BITMAP_HELVETICA_18 = ft.GLUT_BITMAP_HELVETICA_18
 
+def GetFontWidth(font):
+    return glutStrokeWidth(font, ord('_'))
+def GetFontHeight(font):
+    return glutStrokeHeight(font)
 
-def putText(x, y, font, abs_size, string, color):
+def putText(x, y, z, font, abs_size, string, color):
     size = abs_size / 119.05
-    """set_color(color)
-    glRasterPos2f(x, y)
-    glScalef(size, size, size)
-    glutBitmapString(font, string)"""
     set_color(color)
     glLineWidth(2)
     glPushMatrix()
-    glTranslatef(x, y, 0)
+    glTranslatef(x, y, z)
     glScalef(size, size, size)
-    glutStrokeString(font, string)
 
+    glutStrokeString(font, string)
 
     glPopMatrix()
 
 def numDot(number):
-    if '.' in str(number):
+    if number % 1 != 0:
         return abs(str(number).find('.') - len(str(number))) - 1
     else:
         return 0
+
