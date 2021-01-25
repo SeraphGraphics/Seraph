@@ -18,7 +18,7 @@ def animation(value):
     x_step += 0.1
     plot1.Y = np.sin(x0 + x_step) + np.cos(x0 + x_step)*(X - x0)
     plot2.Y = np.sin(X+x_step)
-    renderer.loopAnimation(animation, 33)
+    renderer.loopAnimation(animation, 100)
 
 
 

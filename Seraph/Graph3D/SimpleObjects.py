@@ -11,7 +11,7 @@ class SolidSphere:
         self.color = color
 
     def draw(self):
-        set_color(self.color)
+        set_color(self.color, 0.5)
         glPushMatrix()
         glTranslatef(self.x, self.y, self.z)
         glutSolidSphere(self.size, 15, 15)
